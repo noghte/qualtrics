@@ -72,11 +72,32 @@ def updatequestion(survey_id,question_id):
         logging.error("Cannot update survey {0}, question {1}.".format(survey_id,question_id))
 
 if __name__ == "__main__":
+    print(30 * '-')
+    print("1. Create Surveys")
+    print("2. Update Questions")
+    print("3. Exit")
+    print(30 * '-')
     #survey_ids = makesurveys(3)
     #logging.info(survey_ids)
-    survey_ids = ['SV_aWUIvf1dnGexG1n', 'SV_9GNpWcqsUXjTKkJ', 'SV_5utcO5DoBZLRymh']
-    for survey_id in survey_ids:
-        updatequestion(survey_id,"QID2")
+    choice = raw_input('Enter your choice [1-3] : ')
+    if choice == 1:
+        n = raw_input("How many survys?")
+        survey_ids = makesurveys(n)
+        with open('surveyids.json','w') as f:
+            json.dumps(survey_ids,f)
+        print("Done!")
+    elif choice == 2:
+        print ("Updating questions...")
+        survey_ids = []
+        with open('surveyids.json') as f:
+            survey_ids = json.load(f)
+            
+        for survey_id in survey_ids:
+            updatequestion(survey_id,"QID16")
+        print("Done!")
+    else:
+        print ("Good bye!")
+    
         
         
         
