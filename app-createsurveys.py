@@ -23,42 +23,20 @@ def makesurveys(n):
 
     return survey_ids
 def getparameters(survey_id):
-    data = {
-            "QuestionText": "Specific question for survey {0}?".format(survey_id),
-            "DataExportTag": "Q2",
-            "QuestionType": "MC",
-            "Selector": "SAVR",
-            "SubSelector": "TX",
-            "Configuration": {
-                "QuestionDescriptionOption": "UseText"
-            },
-            "QuestionDescription": "Who is your favorite character in the {0} survey?".format(survey_id),
-            "Choices": {
-                "1": {
-                "Display": "Thomas Mann"
-                },
-                "2": {
-                "Display": "Albert Camus"
-                },
-                "3": {
-                "Display": "Anton Chekov"
-                }
-            },
-            "ChoiceOrder": [
-                "1",
-                "2",
-                "3"
-            ],
-            "Validation": {
-                "Settings": {
-                "ForceResponse": "OFF",
-                "ForceResponseType": "ON",
-                "Type": "None"
-                }
-            },
-            "Language": []
-        }
-    return data
+    data = None
+    with open('Gofundme.qsf') as f:
+        data = json.load(f)
+    
+    for item in data["SurveyElements"]:
+        if (item["PrimaryAttribute"] == "QID16"):
+            if (item["SecondaryAttribute"]):
+                t = item["SecondaryAttribute"].split('\xa0')
+                item["SecondaryAttribute"] = t[0] + " " + "New Title"
+                # item["Payload"]["QuestionText"] = "New short_project_description"
+                # item["Payload"]["QuestionText_Unsafe"] = "New short_project_description"
+    
+  
+    return json.dumps(data)
 
 def updatequestion(survey_id,question_id):
     headers = { "x-api-token": TOKEN }
@@ -79,14 +57,14 @@ if __name__ == "__main__":
     print(30 * '-')
     #survey_ids = makesurveys(3)
     #logging.info(survey_ids)
-    choice = raw_input('Enter your choice [1-3] : ')
-    if choice == 1:
-        n = raw_input("How many survys?")
+    choice = input('Enter your choice [1-3] : ')
+    if int(choice) == 1:
+        n = int(input("How many survys?"))
         survey_ids = makesurveys(n)
-        with open('surveyids.json','w') as f:
-            json.dumps(survey_ids,f)
+        with open('surveyids.json', 'w') as f:
+            json.dump(survey_ids,f)
         print("Done!")
-    elif choice == 2:
+    elif int(choice) == 2:
         print ("Updating questions...")
         survey_ids = []
         with open('surveyids.json') as f:
