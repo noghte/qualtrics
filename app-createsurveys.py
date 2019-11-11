@@ -118,9 +118,6 @@ def getparameters(project_title,short_project_description):
           "25": {
             "Display": "You are willing to donate to the person (people) presented in the image if you are hypothetically asked to"
           },
-          "28": {
-            "Display": "Looking at the person (people) presented in the image made you feel shocked"
-          },
           "29": {
             "Display": "Looking at the person (people) presented in the image made you feel surprised"
           },
@@ -260,7 +257,7 @@ if __name__ == "__main__":
         
         index = 0
         for survey_id in survey_ids:
-          if index > 460:
+          if index > 793:
             project_title = df.iloc[index]["project_title"]
             short_project_description = df.iloc[index]["short_project_description"]
             updatequestion(survey_id,"QID16",project_title,short_project_description)
