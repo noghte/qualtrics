@@ -2,6 +2,8 @@ import json
 import requests
 import config
 import logging
+import csv
+import pandas as pd
 
 TOKEN = config.read_token_from_file()
 logging.basicConfig(format='%(asctime)s %(levelname)-8s %(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
@@ -22,8 +24,7 @@ def makesurveys(n):
             
 
     return survey_ids
-def getparameters(survey_id):
-      
+def getparameters(project_title,short_project_description):
     #   for item in data["SurveyElements"]:
     #     if (item["PrimaryAttribute"] == "QID16"):
     #         if (item["SecondaryAttribute"]):
@@ -32,10 +33,8 @@ def getparameters(survey_id):
                 # item["Payload"]["QuestionText"] = "New short_project_description"
                 # item["Payload"]["QuestionText_Unsafe"] = "New short_project_description"
 
-      project_title = "project_title"
-      
       data = {
-            "QuestionText": "Please look at the image below and read the following text. Then answer the questions.<br /> " + project_title,
+            "QuestionText": "Please look at the image below and read the following text. Then answer the questions.<br /><br /> <i>" + project_title + "</i><br />" + short_project_description,
             "DataExportTag": "Q1",
             "QuestionType": "Matrix",
             "Selector": "Likert",
@@ -226,10 +225,10 @@ def getparameters(survey_id):
   
    # return json.dumps(data)
 
-def updatequestion(survey_id,question_id):
+def updatequestion(survey_id,question_id,project_title,short_project_description):
     headers = { "x-api-token": TOKEN }
     baseUrl = "https://{0}.qualtrics.com/API/v3/survey-definitions/{1}/questions/{2}".format(config.DATA_CENTER,survey_id,question_id)
-    params = getparameters(survey_id)
+    params = getparameters(project_title,short_project_description)
     response = requests.put(baseUrl, json=params, headers=headers)
     
     if (response.status_code == 200):
@@ -257,14 +256,15 @@ if __name__ == "__main__":
         survey_ids = []
         with open('surveyids.json') as f:
             survey_ids = json.load(f)
-            
+        df = pd.read_csv('Summary_HL.csv')
+        
+        index = 0
         for survey_id in survey_ids:
-            updatequestion(survey_id,"QID16")
-        print("Done!")
+          if index > 460:
+            project_title = df.iloc[index]["project_title"]
+            short_project_description = df.iloc[index]["short_project_description"]
+            updatequestion(survey_id,"QID16",project_title,short_project_description)
+            print("Updated: " + str(index) + " id= " + survey_id)
+          index +=1
     else:
         print ("Good bye!")
-    
-        
-        
-        
-    
