@@ -216,11 +216,6 @@ def getparameters(project_title,short_project_description):
         },
         }
       return data
-    
-  
-    
-  
-   # return json.dumps(data)
 
 def updatequestion(survey_id,question_id,project_title,short_project_description):
     headers = { "x-api-token": TOKEN }
@@ -279,9 +274,9 @@ if __name__ == "__main__":
         survey_ids = []
         with open('surveyids.json') as f:
             survey_ids = json.load(f)
+        print(len(survey_ids))
         for s in survey_ids:
           delete_survey(s)
         print("Delete surveyids.json contents")
-    
     else:
         print ("Good bye!")
