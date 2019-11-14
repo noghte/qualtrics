@@ -233,11 +233,22 @@ def updatequestion(survey_id,question_id,project_title,short_project_description
     else:
         logging.error("Cannot update survey {0}, question {1}.".format(survey_id,question_id))
 
+def delete_survey(survey_id):
+    headers = { "x-api-token": TOKEN }
+    baseUrl = "https://{0}.qualtrics.com/API/v3/survey-definitions/{1}".format(config.DATA_CENTER,survey_id)
+    response = requests.delete(baseUrl, headers=headers)
+    
+    if (response.status_code == 200):
+        logging.info("Survey {0}, deleted.".format(survey_id))
+    else:
+        logging.error("Cannot delete survey {0}.".format(survey_id))
+    
 if __name__ == "__main__":
     print(30 * '-')
     print("1. Create Surveys")
     print("2. Update Questions")
-    print("3. Exit")
+    print("2. Delete all")
+    print("4. Exit")
     print(30 * '-')
     #survey_ids = makesurveys(3)
     #logging.info(survey_ids)
@@ -254,14 +265,23 @@ if __name__ == "__main__":
         with open('surveyids.json') as f:
             survey_ids = json.load(f)
         df = pd.read_csv('Summary_HL.csv')
-        
         index = 0
         for survey_id in survey_ids:
-          if index > 793:
+          if index > -1:
             project_title = df.iloc[index]["project_title"]
             short_project_description = df.iloc[index]["short_project_description"]
             updatequestion(survey_id,"QID16",project_title,short_project_description)
             print("Updated: " + str(index) + " id= " + survey_id)
           index +=1
+    elif int(choice) == 3:
+      confirm =input("Are you sure? (y/n)")
+      if confirm.lower() == "y":
+        survey_ids = []
+        with open('surveyids.json') as f:
+            survey_ids = json.load(f)
+        for s in survey_ids:
+          delete_survey(s)
+        print("Delete surveyids.json contents")
+    
     else:
         print ("Good bye!")
