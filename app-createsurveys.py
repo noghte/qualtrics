@@ -165,14 +165,14 @@ def getparameters(project_title,short_project_description):
           "31",
           "25"
         ],
-        "Validation": {
+      "Validation": {
           "Settings": {
-            "ForceResponse": "OFF",
+            "ForceResponse": "ON",
             "ForceResponseType": "ON",
             "Type": "None"
           }
         },
-            "GradingData": [],
+        "GradingData": [],
         "Language": [],
         "NextChoiceId": 36,
         "NextAnswerId": 9,
@@ -242,7 +242,7 @@ if __name__ == "__main__":
     print(30 * '-')
     print("1. Create Surveys")
     print("2. Update Questions")
-    print("2. Delete all")
+    print("3. Delete all")
     print("4. Exit")
     print(30 * '-')
     #survey_ids = makesurveys(3)
